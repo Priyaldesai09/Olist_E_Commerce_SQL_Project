@@ -1,3 +1,7 @@
+SELECT DATABASE();
+USE olist;
+SHOW tables;
+
 SELECT * FROM	olist_customers_dataset;
 SHOW VARIABLES LIKE 'datadir';
 
@@ -209,5 +213,4 @@ GROUP BY pc.product_category_name_english, oi.product_id
 ORDER BY Total_Products_Sold DESC;
 
     
-
 
