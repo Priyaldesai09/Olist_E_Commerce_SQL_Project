@@ -226,7 +226,32 @@ ON o.customer_id = c.customer_id
 GROUP BY c.customer_city, c.customer_state, pc.product_category_name_english, oi.product_id
 ORDER BY Total_Products_Sold DESC;
 -- Conclusion : SP and RJ are the states whob has highest buying power for olist products--
-    
+
+-- 10) Customer Segmentation to identify the repeat customers/one time customers to develop Market and Retention Strategies--
+
+WITH customers_orders_count AS(
+	SELECT 
+		customer_id,
+        COUNT (order_id) AS Total_Orders
+	FROM olist_orders_dataset
+    GROUP BY customer_id
+),
+
+total_customers AS (
+	SELECT COUNT(*) AS total_customer_count
+    FROM customers_orders_count
+)
+SELECT 
+	CASE
+		WHEN Total_Orders = 1 THEN 'One Time Customer'
+        ELSE 'Repeat Customer'
+	END AS customer_type,
+    COUNT(customer_id) AS customer_count,
+    ROUND(COUNT(customer_id)*100 / tc.total_customer_count, 2) AS Category_Percentage
+FROM customers_orders_count
+CROSS JOIN total_customers AS tc
+GROUP BY customer_type;
+
 		
     
 
