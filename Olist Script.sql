@@ -94,7 +94,6 @@ FROM olist_customers_dataset_copy c
 INNER JOIN olist_orders_dataset o 
 ON o.customer_id=c.customer_id;
 
-
 -- For that need to create CTE for making further analysis faster--
 WITH Customer_Orders_Table AS
 	(SELECT 
@@ -169,17 +168,6 @@ DESCRIBE product_category_name_translation
 
 -- 7) Create CTE for Products having Category Name in English for further analysis --
 WITH product_cte AS (
-	SELECT
-		p.product_id,
-        p.product_category_name,
-        pt.product_category_name_english
-	FROM olist_products_dataset AS p
-    INNER JOIN product_category_name_translation AS pt
-		ON p.product_category_name = pt.product_category_name
-)
-SELECT * FROM product_cte;
-
-WITH product_cte AS (
     SELECT
         p.product_id,
         p.product_category_name,
@@ -212,5 +200,32 @@ ON pc.product_id = oi.product_id
 GROUP BY pc.product_category_name_english, oi.product_id
 ORDER BY Total_Products_Sold DESC;
 
+-- 9) Which are the products sold highest in What State and City--
+WITH product_cte AS(
+	SELECT
+		p.product_id,
+        p.product_category_name,
+        pt.product_category_name_english
+	FROM olist_products_dataset AS p
+    INNER JOIN product_category_name_translation AS pt
+    ON p.product_category_name = pt.product_category_name
+)
+SELECT 
+	c.customer_state,
+    c.customer_city,
+    pc.product_category_name_english,
+    oi.product_id,
+    COUNT(oi.product_id) AS Total_Products_Sold
+FROM product_cte AS pc
+INNER JOIN olist_order_items_dataset AS oi
+ON pc.product_id = oi.product_id
+INNER JOIN olist_orders_dataset AS o
+ON oi.order_id = o.order_id
+INNER JOIN olist_customers_dataset_copy AS c
+ON o.customer_id = c.customer_id
+GROUP BY c.customer_city, c.customer_state, pc.product_category_name_english, oi.product_id
+ORDER BY Total_Products_Sold DESC;
+    
+		
     
 
