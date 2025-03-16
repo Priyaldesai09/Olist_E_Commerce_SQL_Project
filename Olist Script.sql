@@ -225,6 +225,7 @@ INNER JOIN olist_customers_dataset_copy AS c
 ON o.customer_id = c.customer_id
 GROUP BY c.customer_city, c.customer_state, pc.product_category_name_english, oi.product_id
 ORDER BY Total_Products_Sold DESC;
+-- Conclusion : SP and RJ are the states whob has highest buying power for olist products--
     
 		
     
