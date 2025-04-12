@@ -252,6 +252,7 @@ FROM customers_orders_count
 CROSS JOIN total_customers AS tc
 GROUP BY customer_type;
 
+<<<<<<< HEAD
 -- Product Review Analysis --
 
 DESCRIBE olist_order_reviews_dataset;
@@ -262,5 +263,8 @@ LIMIT 5;
 
 
 
+=======
+		
+>>>>>>> 3567f5d218f08676dd25810a3ff9c781a03048d6
     
 
