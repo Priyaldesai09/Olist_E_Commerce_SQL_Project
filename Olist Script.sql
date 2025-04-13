@@ -303,7 +303,13 @@ WITH product_cte AS (
     FROM olist_products_dataset AS p
     JOIN product_category_name_translation AS pt
         ON p.product_category_name = pt.product_category_name
+),
+limited_orders AS (
+	SELECT*
+    FROM olist_order_reviews_dataset
+    LIMIT 100
 )
+
 SELECT 
     oi.product_id,
     pc.product_category_name_english,
@@ -318,7 +324,59 @@ JOIN product_cte AS pc
 ORDER BY r.review_score DESC
 LIMIT 100; 
 
+SELECT version();
 
 
-    
+
+WITH product_cte AS (
+    SELECT
+        p.product_id,
+        pt.product_category_name_english
+    FROM olist_products_dataset AS p
+    JOIN product_category_name_translation AS pt
+        ON p.product_category_name = pt.product_category_name
+)
+SELECT 
+    oi.product_id,
+    pc.product_category_name_english,
+    r.review_score,
+    r.review_id,
+    r.order_id
+FROM olist_order_reviews_dataset AS r
+JOIN olist_order_items_dataset AS oi
+    ON r.order_id = oi.order_id
+JOIN product_cte AS pc
+    ON pc.product_id = oi.product_id
+ORDER BY r.review_score DESC
+LIMIT 100;
+
+-- Most updated Query for the highest scored products--
+
+    WITH product_cte AS (
+    SELECT
+        p.product_id,
+        pt.product_category_name_english
+    FROM olist_products_dataset AS p
+    JOIN product_category_name_translation AS pt
+        ON p.product_category_name = pt.product_category_name
+),
+limited_orders AS (
+    SELECT *
+    FROM olist_order_reviews_dataset
+    LIMIT 100
+)
+SELECT 
+    oi.product_id,
+    pc.product_category_name_english,
+    r.review_score,
+    r.review_id,
+    r.order_id
+FROM limited_orders AS r
+JOIN olist_order_items_dataset AS oi
+    ON r.order_id = oi.order_id
+JOIN product_cte AS pc
+    ON pc.product_id = oi.product_id
+ORDER BY r.review_score DESC
+LIMIT 100;
+
 
