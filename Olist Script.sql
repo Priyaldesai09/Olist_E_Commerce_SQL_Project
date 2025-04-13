@@ -259,7 +259,7 @@ SELECT *FROM olist_order_reviews_dataset
 LIMIT 5;
 
 SELECT*FROM product_category_name_translation;
-
+SELECT*FROM olist_products_dataset;
 -- Find the Most Preferred Product --
 SELECT 
 	oi.product_id,
@@ -270,6 +270,53 @@ FROM olist_order_reviews_dataset AS r
 JOIN olist_order_items_dataset AS oi
 	ON r.order_id = oi.order_id
 ORDER BY review_score DESC;
+
+-- 11) Find out Product Category English Name and Review Score --
+-- Again using CTE to first get the Product Category English Name --
+WITH product_cte AS(
+	SELECT
+		p.product_id,
+		p.product_category_name,
+        pt.product_category_name_english
+	FROM olist_products_dataset AS p
+    INNER JOIN product_category_name_translation AS pt
+    ON p.product_category_name = pt.product_category_name
+)
+SELECT 
+	oi.product_id,
+    pc.product_category_name_english,
+    r.review_score,
+    r.review_id,
+    r.order_id
+FROM olist_order_reviews_dataset AS r
+INNER JOIN olist_order_items_dataset AS oi
+	ON r.order_id = oi.order_id
+INNER JOIN product_cte AS pc
+	ON pc.product_id = oi.product_id
+ORDER BY review_score DESC
+LIMIT 100;
+
+WITH product_cte AS (
+    SELECT
+        p.product_id,
+        pt.product_category_name_english
+    FROM olist_products_dataset AS p
+    JOIN product_category_name_translation AS pt
+        ON p.product_category_name = pt.product_category_name
+)
+SELECT 
+    oi.product_id,
+    pc.product_category_name_english,
+    r.review_score,
+    r.review_id,
+    r.order_id
+FROM olist_order_reviews_dataset AS r
+JOIN olist_order_items_dataset AS oi
+    ON r.order_id = oi.order_id
+JOIN product_cte AS pc
+    ON pc.product_id = oi.product_id
+ORDER BY r.review_score DESC
+LIMIT 100; 
 
 
 
