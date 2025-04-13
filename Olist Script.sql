@@ -379,4 +379,41 @@ JOIN product_cte AS pc
 ORDER BY r.review_score DESC
 LIMIT 100;
 
+-- Low Performing Products --
+
+WITH product_cte AS (
+	SELECT 
+		p.product_id,
+        pc.product_category_name_english
+	FROM olist_products_dataset AS p
+    INNER JOIN product_category_name_translation AS pc
+    ON p.product_category_name = pc.product_category_name
+),
+product_reviews AS (
+	SELECT 
+		oi.product_id,
+        r.review_score
+	FROM olist_order_reviews_dataset AS r
+    INNER JOIN olist_order_items_dataset AS oi
+    ON r.order_id = oi.order_id
+),
+average_reviews AS(
+	SELECT 
+		pr.product_id,
+        AVG(pr.review_score) AS average_review_score
+	FROM product_reviews AS pr
+    GROUP BY pr.product_id
+)
+SELECT 
+	ar.product_id,
+    pc.product_category_name_english,
+    ar.average_review_score
+FROM average_reviews AS ar
+JOIN product_cte AS pc
+	ON ar.product_id = pc.product_id
+WHERE ar.average_review_score < 3
+ORDER BY ar.average_review_score ASC
+LIMIT 100;
+
+
 
