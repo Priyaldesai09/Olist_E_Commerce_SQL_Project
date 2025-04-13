@@ -252,19 +252,26 @@ FROM customers_orders_count
 CROSS JOIN total_customers AS tc
 GROUP BY customer_type;
 
-<<<<<<< HEAD
 -- Product Review Analysis --
 
 DESCRIBE olist_order_reviews_dataset;
 SELECT *FROM olist_order_reviews_dataset
 LIMIT 5;
 
+SELECT*FROM product_category_name_translation;
+
 -- Find the Most Preferred Product --
+SELECT 
+	oi.product_id,
+    r.review_score,
+    r.review_id,
+    r.order_id
+FROM olist_order_reviews_dataset AS r
+JOIN olist_order_items_dataset AS oi
+	ON r.order_id = oi.order_id
+ORDER BY review_score DESC;
 
 
 
-=======
-		
->>>>>>> 3567f5d218f08676dd25810a3ff9c781a03048d6
     
 
